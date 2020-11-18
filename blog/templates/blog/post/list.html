@@ -1,0 +1,39 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<br>  
+<div class="container" id="col-solid" >
+	<div class="row d-flex justify-content-center">
+		<div class="col-md-11" >
+   			{% if tag %}
+   			<h2 class="card-title">Posts with tags "{{ tag.name }}"</h2>
+   			{% endif %} 
+   			{% for post in posts %}
+    		<div class="card-body">
+	 			<h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+     			<hr>
+	 			<p class="date">
+	 			<i class="fa fa-user-circle-o" aria-hidden="true"> {{ post.author }} </i>
+    			<i class="fa fa-calendar" aria-hidden="true"> {{ post.publish }} </i> 
+     			<i class="fa fa-tags" aria-hidden="true"></i>
+    			{% for tag in post.tags.all %}
+     			<a href="{% url 'blog:post_list_by_tag' tag.slug %}"> {{ tag.name }} </a>
+     			{% if not forloop.last %}, {% endif %}
+     			{% endfor %}
+     			<i class="fa fa-commenting" aria-hidden="true"> {{ post.comments.count }} Comments</a></i></p>
+ 	 			<p class="card-text ">
+ 	 			{% if post.image %}
+					<form method="post" enctype="multipart/form-data">
+						<p style="text-align:center"><img  class="featurette-image img-fluid mx-auto"  src="{{ post.image.url|default_if_none:'#' }}"  style="height: 600px;" /></p>
+					</form>
+ 				{% endif %}
+	  			{{ post.body|safe|truncatewords:60|linebreaks }}
+	  			</p>
+  				<a href="{{ post.get_absolute_url }}">Continue Reading...</a>
+			</div>
+			{% endfor %}
+			{% include "pagination.html" with page=posts %}
+	 	</div>
+	</div>
+</div>
+{% endblock %}

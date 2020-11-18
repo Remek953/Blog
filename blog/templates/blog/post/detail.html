@@ -1,0 +1,76 @@
+{% extends "blog/base.html" %}
+
+{% block title %} {{ post.title }} {% endblock %}
+
+{% block content %}
+<br>  
+<div class="row d-flex justify-content-center">
+	<div class="container" id="col-solid" >
+  		<div class="card-body">
+   			<h2 class="card-title">{{ post.title }}</h2>
+   			<hr>
+   			<p class="date">
+   			<i class="fa fa-user-circle-o" aria-hidden="true"> {{ post.author }} </i>
+   			<i class="fa fa-calendar" aria-hidden="true"> {{ post.publish }} </i> 
+   			<i class="fa fa-tags" aria-hidden="true"></i>
+   			{% for tag in post.tags.all %}
+   			<a href="{% url 'blog:post_list_by_tag' tag.slug %}"> {{ tag.name }} </a></p>
+   			{% if not forloop.last %}, 
+   			{% endif %}
+   			{% endfor %}
+   			{% if post.image %}
+   			<form method="post" enctype="multipart/form-data">
+   				<p style="text-align:center"><img class="featurette-image img-fluid mx-auto"  src="{{ post.image.url|default_if_none:'#' }}" style="height: 600px;" /></p>
+   			</form>
+   			{% endif %}
+   			{{ post.body|safe|linebreaks }}
+  		</div>
+  		<div class="card-body">
+   			<h2>Similar Posts</h2>
+   			<hr>
+   			{% for post in similar_posts %}
+   			<p><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></p>
+   			{% empty %}
+   			There are no similar posts
+   			{% endfor %}
+  		</div>
+  		<div class="col-md-12" id="wrapword" >
+   			{% with comments.count as total_comments %}
+   			<h2>{{ total_comments }} comments</h2>
+   			<hr>
+   			{% endwith %}
+   			{% for comment in comments %}
+    		<div class="comment">
+	 			<p class="info">
+	 			<i class="fa fa-user-circle-o" aria-hidden="true"> {{ comment.name }} </i>
+	 			<i class="fa fa-calendar" aria-hidden="true"> {{ comment.created }} </i></p>
+	 			{{ comment.body|safe|linebreaks }}
+			</div>
+			{% empty %}
+			<p> There is no comments </p>
+			{% endfor %}
+			{% if new_comment %}
+			<h2>Your comment was added</h2>
+			{% else %}
+    	</div>
+  		<div class="card-body ">
+    		<div class="row justify-content-center">
+      			<div class="col-md-8">
+	   				<div class="text-center">
+	   					<h2>Add new Comment</h2>
+        				<form action="." method="post">
+							{% csrf_token %}
+							{{ comment_form.media }}
+							{{ comment_form.as_p }}
+							<p><input type="submit" value="Add comment"></p>
+	    				</form>
+	    			{% endif %}
+	   				</div>
+	  			</div>
+    		</div>
+   		</div>
+ 	</div>
+</div>
+{% endblock %}
+
+
