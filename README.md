@@ -24,6 +24,6 @@ To clone repository, open Windows Command Line and navigate to directory, where 
 $ git clone https://github.com/Remek953/Blog.git
 ```
 
-##License
+## License
 
 Distributed under the MIT License.
